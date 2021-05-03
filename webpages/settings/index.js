@@ -201,22 +201,31 @@ const AddonBody = Vue.extend({
     addonMatchesFilters() {
       if (this.groupId !== "search" && this.searchInput !== "") return false;
       if (!this.addon._wasEverEnabled) this.addon._wasEverEnabled = this.addon._enabled;
-
-      const search = this.searchInput.toLowerCase();
-
+      const stringMatches = function (string, match) {
+        return string.toLowerCase().includes(match.toLowerCase());
+      }
+      
+      const searches = this.searchInput.toLowerCase();
+      const { search, advanced } = searches.split("@");
+      
       const matchesSearch =
         this.searchInput === "" ||
-        this.addon.name.toLowerCase().includes(search) ||
-        this.addon._addonId.toLowerCase().includes(search) ||
-        this.addon.description.toLowerCase().includes(search) ||
+        stringMatches(this.addon.name, search) ||
+        stringMatches(this.addon._addonId, search) ||
+        stringMatches(this.addon.description, search) ||
         (this.addon.credits &&
-          this.addon.credits.map((obj) => obj.name.toLowerCase()).some((author) => author.includes(search)));
+          this.addon.credits.map((obj) => stringMatches(this.obj.name, search)));
       // Show disabled easter egg addons only if category is easterEgg
       const matchesEasterEgg = this.addon.tags.includes("easterEgg")
         ? this.$root.selectedCategory === "easterEgg" || this.addon._wasEverEnabled
         : true;
+      const matchesAdvancedMapColon = advanced.split("$");
+      var matchesAdvancedMap = [];
+      matchesAdvancedMapColon.forEach((item) => matchesAdvancedMap.push([item.split(":")[0], item.split(":")[1]]));
+      var matchesAdvanced = false;
+      matchesAdvancedMap.forEach((advancedMap) => matchesAdvanced = matchesAdvanced || this.addon[advancedMap[0]] == this.addon[advancedMap[1]]);
 
-      return matchesSearch && matchesEasterEgg;
+      return (matchesSearch || matchesAdvanced) && matchesEasterEgg;
     },
   },
   methods: {
