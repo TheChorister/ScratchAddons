@@ -31,6 +31,11 @@ export default class Trap extends Listenable {
   get REACT_INTERNAL_PREFIX() {
     return "__reactInternalInstance$";
   }
+  
+  reactInternalKey (selector='.gui') {
+    elem = await this._waitForElement(selector); // Gets a dummy element that will have the __react... property attached
+    return Object.keys(elem).find((key) => key.startsWith(this.REACT_INTERNAL_PREFIX));
+  }
 
   /**
    * Gets Blockly instance actually used by Scratch.
@@ -44,14 +49,10 @@ export default class Trap extends Listenable {
     const editorMode = this._getEditorMode();
     if (!editorMode || editorMode === "embed") throw new Error("Cannot access Blockly on this page");
     const BLOCKS_CLASS = '[class^="gui_blocks-wrapper"]';
-    let elem = document.querySelector(BLOCKS_CLASS);
-    if (!elem) {
-      elem = await this._waitForElement(BLOCKS_CLASS);
-    }
     if (!this._react_internal_key) {
-      this._react_internal_key = Object.keys(elem).find((key) => key.startsWith(this.REACT_INTERNAL_PREFIX));
+      this._react_internal_key = reactInternalKey(BLOCKS_CLASS);
     }
-    const internal = elem[this._react_internal_key];
+    const internal = await this._waitForElement(BLOCKS_CLASS)[this._react_internal_key];
     let childable = internal;
     /* eslint-disable no-empty */
     while (((childable = childable.child), !childable || !childable.stateNode || !childable.stateNode.ScratchBlocks)) {}
