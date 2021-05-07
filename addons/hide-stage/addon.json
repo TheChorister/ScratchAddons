@@ -1,0 +1,24 @@
+{
+  "name": "Auto-hide Stage Area",
+  "description": "Hides the stage area if not hovered or clicked.",
+  "credits": [
+    {
+      "name": "TheChorister",
+      "link": "https://scratch.mit.edu/users/TheChorister"
+    }
+  ],
+  "userscripts": [
+    {
+      "url": "userscript.js",
+      "matches": ["https://scratch.mit.edu/projects/*"]
+    }
+  ],
+  "userstyles": [
+    {
+      "url": "style.css",
+      "matches": ["https://scratch.mit.edu/projects/*"]
+    }
+  ],
+  "traps" : true,
+  "tags": ["editor"]
+}
