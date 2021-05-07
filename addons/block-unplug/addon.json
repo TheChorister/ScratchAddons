@@ -1,0 +1,20 @@
+{
+  "name" : "Block drag heal",
+  "description" : "Heals the script stack when a block is dragged.",
+  "credits" : [
+    {
+      "name" : "TheChorister",
+      "link" : "https://scratch.mit.edu/users/TheChorister"
+    }
+  ],
+  "tags" : ["editor", "beta"],
+  "traps" : true,
+  "settings" : [
+    {
+      "name": "Toggle heal properties in a context menu.",
+      "id": "contextmenu_toggle",
+      "type": "boolean",
+      "default": false
+    }
+  ]
+}
