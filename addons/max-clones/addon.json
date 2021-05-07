@@ -1,0 +1,39 @@
+{
+  "name" : "Custom max clones",
+  "description" : "Changes the default clone limit!",
+  "settings" : [
+    {
+      "name" : "Infinite",
+      "type" : "boolean",
+      "id" : "clones_infinite",
+      "default" : true
+    },
+    {
+      "name" : "Clones limit",
+      "type" : "positive_integer",
+      "id" : "clones_max",
+      "default" : 300
+    }
+  ],
+  "info" : [
+    {
+      "type" : "warning",
+      "id" : "rely-on-projects",
+      "text" : "Don't create projects that rely on this addon - users without Scratch Addons will be unable to use it."
+    }
+  ],
+  "tags" : ["easterEgg", "beta"],
+  "credits" : [
+    {
+      "name" : "TheChorister",
+      "link" : "https://scratch.mit.edu/users/TheChorister"
+    }
+  ],
+  "userscripts" : [
+    {
+      "url" : "userscript.js",
+      "matches" : "https://scratch.mit.edu/projects/*"
+    }
+  ],
+  "traps" : true
+}
