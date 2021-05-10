@@ -1,0 +1,26 @@
+{
+  "name" : "Debugger",
+  "description" : "Tracks which blocks have been run.",
+  "traps" : true,
+  "libraries" : ["scratchblocks"],
+  "userstyles" : [
+    {
+      "url" : "style.css",
+      "matches" : ["https://scratch.mit.edu/projects/editor", "https://scratch.mit.edu/projects/*/editor"]
+    }
+  ],
+  "userscripts" : [
+    {
+      "url" : "userscript.js",
+      "matches" : ["https://scratch.mit.edu/projects/editor", "https://scratch.mit.edu/projects/*/editor"]
+    }
+  ],
+  "tags" : ["editor"],
+  "info" : [
+    {
+      "type" : "warning",
+      "id" : "spam-variable",
+      "text" : "If you have variable monitors on, the console is spammed with variable calls."
+    }
+  ]
+}
