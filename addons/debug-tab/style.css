@@ -1,5 +1,6 @@
 #debugger {
     background-color: #ffffff;
     overflow-y: scroll;
-    max-height: 87vh
+    max-height: 87vh;
+    height: 87vh;
 }
