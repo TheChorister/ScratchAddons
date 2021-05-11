@@ -62,7 +62,7 @@ export default async function ({ addon }) {
     motion_turnleft: (args) => `turn left (${args.DEGREES || 15}) degrees`,
     motion_setx: (args) => `set x to (${args.X})`
   }
-  await addon.tab.loadScript(addon.self.lib+"/thirdparty/cs/scratchblocks-v3.5-min.js");
+//  await addon.tab.loadScript(addon.self.lib+"/thirdparty/cs/scratchblocks-v3.5-min.js");
   function renderOpcode (block, args={}) {
     var newBlock = document.createElement("li");
 //    newBlock.style.backgroundColor = ScratchBlocks;
