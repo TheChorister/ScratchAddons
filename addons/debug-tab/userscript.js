@@ -1,4 +1,6 @@
 export default async function ({ addon }) {
+  var vm = addon.tab.traps.vm;
+  var ScratchBlocks = await addon.tab.traps.getBlockly();
   // DOM:
   var tabs = await addon.tab.waitForElement("[class*=gui_tabs]")
   var tabList = await addon.tab.waitForElement("[class*=gui_tab-list]");
@@ -63,12 +65,12 @@ export default async function ({ addon }) {
   await addon.tab.loadScript(addon.self.lib+"/thirdparty/cs/scratchblocks-v3.5-min.js");
   function renderOpcode (block, args={}) {
     var newBlock = document.createElement("li");
-    newBlock.innerText = mapOpcodesToScratchblocks[block](args);
+//    newBlock.style.backgroundColor = ScratchBlocks;
+    newBlock.innerText = /*mapOpcodesToScratchblocks]*/block/*](args)*/;
     debugOpcodes.appendChild(newBlock);
     //debugOpcodes.innerHTML += "\n"+/*mapOpcodesToScratchblocks[*/block/*](args)*/;
     //scratchblocks.parse("pre#opcode-debug", {inline: false});
   }
-  var vm = addon.tab.traps.vm;
   vm.runtime.renderer.setDebugCanvas(debugCanvas);
   vm.runtime.enableProfiling();
   vm.runtime.profiler.onFrame = function ({ id, arg }) {
