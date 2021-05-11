@@ -2,7 +2,6 @@
   "name" : "Debugger",
   "description" : "Tracks which blocks have been run.",
   "traps" : true,
-  "libraries" : ["scratchblocks"],
   "userstyles" : [
     {
       "url" : "style.css",
