@@ -1,6 +1,40 @@
-#debugger {
+.sa-debugger {
     background-color: #ffffff;
-    overflow-y: scroll;
-    max-height: 87vh;
-    height: 87vh;
+    overflow-y: auto;
+    /*max-height: 87vh;*/
+    height: 50px;
+    width: 100%;
+    padding: 18px;
+}
+.sa-debugger tr {
+    width: 100%;
+    margin: 18px;
+}
+.sa-debug-search {
+    background-image: url("search.svg");
+    width: 25%;
+    margin-bottom: 4px;
+    padding: 8px;
+    padding-right: 32px; /* for the text to not overlap the image */
+    border-radius: 4px;
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    background-position: calc(100% - 7px) center;
+    font-size: 0.75rem;
+}
+.sa-hidden-radio {
+    display: none
+}
+.sa-category-radio {
+    border: 1px solid hsla(0, 0%, 0%, 0.15);
+    padding: 8px;
+    color: var(--thisCategoryColor)
+}
+.sa-category-radio:nth-of-type(1) {
+    border-bottom-left-radius: 14px;
+    border-top-left-radius: 14px;
+}
+.sa-category-radio:nth-last-of-type(1) {
+    border-bottom-right-radius: 14px;
+    border-top-right-radius: 14px;
 }
