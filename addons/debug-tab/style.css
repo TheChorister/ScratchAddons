@@ -30,11 +30,11 @@
     padding: 8px;
     color: var(--thisCategoryColor)
 }
-.sa-category-radio:nth-of-type(1) {
+.sa-category-radio-wrapper:nth-child(1) label {
     border-bottom-left-radius: 14px;
     border-top-left-radius: 14px;
 }
-.sa-category-radio:nth-last-of-type(1) {
+.sa-category-radio-wrapper:nth-last-child(1) label {
     border-bottom-right-radius: 14px;
     border-top-right-radius: 14px;
 }

@@ -32,21 +32,23 @@ export default async function ({ addon }) {
   ScratchBlocks.getMainWorkspace()
     .getFlyout().parentToolbox_.categoryMenu_.categories_.forEach((category) => {
     var newRadioButton = document.createElement("input");
-    newRadioButton.type = "radio";
+    newRadioButton.type = "checkbox";
     newRadioButton.name = "category";
-    newRadioButton.value = ScratchBlocks.utils.replaceMessageReferences(category.name_);
+    newRadioButton.value = category.id_;
     newRadioButton.addEventListener("input", (e)=>console.log(this.value, e));
     newRadioButton.classList.add("sa-hidden-radio");
     var newRadioLabel = document.createElement("label");
-    newRadioLabel.innerText = newRadioButton.value;
+    newRadioLabel.innerText = ScratchBlocks.utils.replaceMessageReferences(category.name_);
     newRadioLabel.classList.add(addon.tab.scratchClass("sprite-info_radio"), "sa-category-radio");
-    newRadioLabel.style.setProperty("--thisCategoryColor");
+    newRadioLabel.style.setProperty("--thisCategoryColor", category.colour_);
+    newRadioLabel.style.filter = " ";
+    newRadioLabel.style.webkitFilter = " ";
     var newRadio = document.createElement("span");
     newRadio.appendChild(newRadioButton);
     newRadio.appendChild(newRadioLabel);
     radioBox.appendChild(newRadio);
   });
-  radioBox.classList.add(addon.tab.scratchClass("sprite-info_radio-wrapper"));
+  radioBox.classList.add(addon.tab.scratchClass("sprite-info_radio-wrapper"), "sa-category-radio-wrapper");
   // Add to DOM
   //debugArea.appendChild(debugCanvas);
   searchBox.appendChild(searchInput);
@@ -68,11 +70,14 @@ export default async function ({ addon }) {
         block.renderBlock();
       });
     }
-    constructor (opcode, args) {
+    constructor (opcode, args, blockUtils, proccode="") {
       BlockRow.allBlocks.push(this);
       this.opcode = opcode;
       this.args = args;
+      this.utils = blockUtils;
+      this.procCode = proccode;
       this.visible = true;
+      this.rendered = false;
       this.initRender();
     }
     initRender () {
@@ -89,6 +94,11 @@ export default async function ({ addon }) {
         zoom: false
       });
       this.blocklyBlock = this.workspace.newBlock(this.opcode);
+      this.blocklyBlock.procCode_ = this.procCode === "" ? undefined : this.procCode;
+      // Update the custom block text
+      if (this.blocklyBlock.updateDisplay_) {
+        this.blocklyBlock.updateDisplay_();
+      }
       this.blocklyBlock.initSvg();
       // Set media path (or the images dont render)
       this.workspace.options.pathToMedia = "/static/blocks-media/";
@@ -98,26 +108,40 @@ export default async function ({ addon }) {
       this.renderBlock();
     }
     renderBlock () {
+      this.addInputs();
       if (this.visible) {
         this.workspace.setVisible(true);
         this.workspace.render();
       } else {
         this.workspace.setVisible(false);
       }
-      this.metrics();
-      ScratchBlocks.svgResize(this.workspace);
+      this.metrics("content");
+      this.metrics("view");
+      this.rendered = true;
     }
-    metrics () {
+    metrics (use="content") {
       var metrics = this.workspace.getMetrics();
-      if (!this.visible) metrics = {contentHeight: 0, contentWidth: 0};
-      this.DOMWorkspace.style.height = metrics.contentHeight + "px";
-      this.DOMWorkspace.style.width = /*"100%";*/metrics.contentWidth + "px";
+      if (!this.visible) metrics = {viewHeight: 0, viewWidth: 0, contentHeight: 0, contentWidth: 0};
+      this.DOMWorkspace.style.height = this.visible ? "68px" : "0";//metrics[use + "Height"] + "px";
+      this.DOMWorkspace.style.width = metrics[use + "Width"] + "px";
+      ScratchBlocks.svgResize(this.workspace);
+      // For some reason hats are offset up 20 pixels
+      if (this.blocklyBlock.startHat_) this.workspace.svgBlockCanvas_.style.transform = "translate(0,20px) scale(1)"; 
     }
     getBlockText () {
-      return this.workspace.svgGroup_.textContent;
+      return this.blocklyBlock.toString();
+    }
+    // @todo Make this work
+    addInput (name, value) {
+      var input = this.blocklyBlock.getInput(name);
+      var field = new ScratchBlocks.Field(); // Change field types
+      field.setValue(value);
+      input.appendField(field);
     }
     addInputs () {
-      // Work on this
+      for (let arg in this.args) {
+        if (!arg === "mutation") this.addInput(arg, this.args[arg])
+      }
     }
     textSearchMatch (text) {
       // The workspace textContent returns the text in the block but with no spaces
@@ -138,7 +162,13 @@ export default async function ({ addon }) {
     }
   }
   function renderOpcode (block, args={}) {
-    var newBlock = new BlockRow(block, args);
+    var blockArgs = args[0];
+    var blockUtils = args[1];
+    const proccode = blockArgs.mutation ? blockArgs.mutation.proccode : null;
+    console.log(block)
+    console.log(args)
+    console.log(proccode);
+    var newBlock = new BlockRow(block, blockArgs, blockUtils, proccode);
     newBlock.renderBlock();/*
     var newBlockRow = document.createElement("tr");
     var newBlock = document.createElement("td");
@@ -161,10 +191,29 @@ export default async function ({ addon }) {
     ScratchBlocks.svgResize(newWorkspace);*/
   }
   vm.runtime.renderer.setDebugCanvas(debugCanvas);
-  vm.runtime.enableProfiling();
+  // Profiling is cleaner, but does not give use enough info
+  /*vm.runtime.enableProfiling();
   vm.runtime.profiler.onFrame = function ({ id, arg }) {
     if (id === vm.runtime.profiler.idByName("blockFunction")) {
       renderOpcode(arg);
+    }
+  };*/
+  //vm.runtime._primitives.forEach((func, opcode) => {
+  /*for (let opcode in vm.runtime._primitives) {
+    let func = vm.runtime._primitives[opcode];
+    const oldFunc = func;
+    vm.runtime._primitives[opcode] = function (args, utils) {
+      renderOpcode(opcode, args, (args.mutation || {proccode: {value: ""}}).proccode.value);
+      console.log(args,opcode);
+      oldFunc.bind(this, args, opcode);
+    };
+  }*/
+  const oldGetOpcodeFunc = vm.runtime.getOpcodeFunction;
+  vm.runtime.getOpcodeFunction = function (opcode) {
+    const proper = oldGetOpcodeFunc.call(vm.runtime, opcode);
+    return proper === undefined ? undefined : function (...args) {
+      renderOpcode(opcode, args);
+      proper(...args);
     }
   };
   // Implement searches
