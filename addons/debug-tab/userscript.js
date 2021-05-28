@@ -86,6 +86,13 @@ export default async function ({ addon }) {
         block.renderBlock();
       });
     }
+    static get mostRecentBlock () {
+      // No blocks have run yet
+      if (BlockRow.allBlocks.length < 1) {
+        return;
+      }
+      return BlockRow.allBlocks[BlockRow.allBlocks.length - 1];
+    }
     constructor (opcode, args, blockUtils, proccode="") {
       BlockRow.allBlocks.push(this);
       this.opcode = opcode;
@@ -93,6 +100,7 @@ export default async function ({ addon }) {
       this.args = args;
       this.utils = blockUtils;
       this.procCode = proccode;
+      this.blockId = this.utils.thread.peekStack();
       this.visible = true;
       this.rendered = false;
       this.xml = this.generateBlockXML();
@@ -111,12 +119,7 @@ export default async function ({ addon }) {
         scrollbars: false,
         zoom: false
       });
-      this.blocklyBlock = ScratchBlocks.Xml.domToBlock(ScratchBlocks.Xml.textToDom(this.xml), this.workspace);
-      this.blocklyBlock.procCode_ = this.procCode === "" ? undefined : this.procCode;
-      // Update the custom block text
-      if (this.blocklyBlock.updateDisplay_) {
-        this.blocklyBlock.updateDisplay_();
-      }
+      this.blocklyBlock = ScratchBlocks.Xml.domToBlock(this.xml, this.workspace);
       this.blocklyBlock.initSvg();
       // Set media path (or the images dont render)
       this.workspace.options.pathToMedia = "/static/blocks-media/";
@@ -139,7 +142,7 @@ export default async function ({ addon }) {
     metrics (use="content") {
       var metrics = this.workspace.getMetrics();
       if (!this.visible) metrics = {viewHeight: 0, viewWidth: 0, contentHeight: 0, contentWidth: 0};
-      this.DOMWorkspace.style.height = this.visible ? "68px" : "0";//metrics[use + "Height"] + "px";
+      this.DOMWorkspace.style.height = metrics[use + "Height"] + 20 + "px";
       this.DOMWorkspace.style.width = metrics[use + "Width"] + "px";
       ScratchBlocks.svgResize(this.workspace);
       // For some reason hats are offset up 20 pixels
@@ -148,138 +151,12 @@ export default async function ({ addon }) {
     getBlockText () {
       return this.blocklyBlock.toString();
     }
-    generateCategoryInfo () {
-      const categoryId = this.category;
-      var category = originalWorkspace.getFlyout().parentToolbox_.categoryMenu_.categories_.find((category)=>category.id_ === categoryId);
-      if (!category) return;
-      var categoryInfo = {};
-      categoryInfo.id = category.id_;
-      categoryInfo.name = ScratchBlocks.utils.replaceMessageReferences(category.name_);
-      categoryInfo.color1 = category.colour_;
-      categoryInfo.color2 = category.secondaryColour_;
-      // The categories don't yet tell use the tertiary colour
-      categoryInfo.color3 = category.secondaryColour_;
-      categoryInfo.blockIconURI = category.iconURI_;
-      categoryInfo.blocks = [];
-      categoryInfo.menus = [];
-      return categoryInfo;
-    }
-    generateBlockInfo (categoryInfo) {
-      var blockInfo = {};
-      // Remove the
-      blockInfo.opcode = this.opcode.split("_").splice(0, 1).join("_");
-      blockInfo.text = this.generateInputString();
-      var blockJSON;
-      ScratchBlocks.Blocks[this.opcode].init.call({jsonInit: (args) => blockJSON = args});
-      if (blockJSON.outputShape === 3 && blockJSON.previousStatement === null) {
-        blockInfo.blockType = "command";
-      } else if (blockJSON.output === "String" && blockJSON.outputShape === 2) {
-        blockInfo.blockType = "reporter";
-      } else if (blockJSON.output === "Boolean" && blockJSON.outputShape === 1) {
-        blockInfo.blockType = "Boolean";
-      } else if (blockJSON.nextStatement === "String" && blockJSON.outputShape === 3) {
-        blockInfo.blockType = "event";
-      } else if (blockJSON.branchCount && blockJSON.outputShape === 3 && blockJSON.previousStatement === null) {
-        blockInfo.blockType = "command";
-      } else if (blockJSON.extensions.includes("shape_hat")) {
-        blockInfo.blockType = "hat";
-      } else {
-        blockInfo.blockType = "conditional";
-      }
-      // For some readon the find function doesn't work on the ArgumenType Object
-      function objectToArray (object) {
-        var array = new Array();
-        for (let key in object) {
-          array[key] = object[key];
-        }
-        return array;
-      }
-      const ArgumentTypes = objectToArray({
-        ANGLE: "angle",
-        BOOLEAN: "Boolean",
-        COLOR: "color",
-        NUMBER: "number",
-        STRING: "string",
-        MATRIX: "matrix",
-        NOTE: "note",
-        IMAGE: "image"
-      });
-      blockInfo.arguments = {};
-      for (let arg in this.args) {
-        blockInfo.arguments[arg] = {};
-        let argsForBlockly = [];
-        // Just in case it has arguments like args1 or args2 as well as args0
-        for (let argname in blockJSON) {
-          let argument = blockJSON[argname];
-          if (argname.startsWith("arg")) {
-            //argument.forEach((blockArg, key) => argsForBlockly[key] = blockArg)
-            for (let key in argument) {
-              argsForBlockly[key] = argument[key];
-            }
-          }
-        };
-        if (argsForBlockly.find((arg) => arg.type.includes("dropdown"))) {
-          categoryInfo.menus[arg] = {};
-          categoryInfo.menus[arg].items = [];
-          categoryInfo.menus[arg].items.push(
-            {
-              text: blockJSON.args0.find((argument) => {
-                argument.type.includes("dropdown")
-              }).options.find(
-                (option) => option[1] === this.args[arg]
-              )[0],
-              value: blockJSON.args0.find((argument) => {
-                argument.type.includes("dropdown")
-              }).options.find(
-                (option) => option[1] === this.args[arg]
-              )[1]
-            }
-          );
-        }
-        blockInfo.arguments[arg].type = ArgumentTypes.find((argType) => 
-         {
-           const argBlockly = argsForBlockly.find(
-             (argument) => {
-               argument.name === arg
-              }
-            );
-            return argBlockly.type.toLowerCase().includes(argType.toLowerCase()) || argBlockly.check.toLowerCase().includes(argType.toLowerCase())
-          });
-        blockInfo.arguments[arg].defaultValue = this.args[arg];
-      }
-      return blockInfo;
-    }
-    // Based on https://github.com/LLK/scratch-blocks/blob/develop/core/block.js#L1185
-    blockToString (block) {
-      var text = [];
-      if (block.collapsed_) {
-        text.push(block.getInput('_TEMP_COLLAPSED_INPUT').fieldRow[0].text_);
-      } else {
-        for (var i = 0, input; input = block.inputList[i]; i++) {
-          for (var j = 0, field; field = input.fieldRow[j]; j++) {
-            if (field instanceof ScratchBlocks.FieldDropdown && !field.getValue()) {
-              text.push(field.name ? `[${field.name}]` : "");
-            } else {
-              text.push(field.getText());
-            }
-          }
-          if (input.connection) {
-            var child = input.connection.targetBlock();
-            if (child) {
-              text.push(this.blockToString(child));
-            } else {
-              text.push(field.name ? `[${field.name}]` : "");
-            }
-          }
-        }
-      }
-      return text.join(" ");
-    }
-    generateInputString () {
-      return this.blockToString(this.blocklyBlock);
-    }
     generateBlockXML () {
-      return vm.runtime._convertBlockForScratchBlocks(this.generateBlockInfo(), this.generateCategoryInfo()).xml;
+      var xml = ScratchBlocks.Xml.textToDom(this.utils.thread.target.blocks.blockToXML(this.blockId));
+      // We don't want to include the next blocks (it gets very messy)
+      var next = xml.querySelector("block > next");
+      if (next) next.remove();
+      return xml;
     }
     textSearchMatch (text) {
       // The workspace textContent returns the text in the block but with no spaces
@@ -302,9 +179,11 @@ export default async function ({ addon }) {
   function renderOpcode (block, args={}) {
     var blockArgs = args[0];
     var blockUtils = args[1];
+    // if the block is the same as before, ignore it
+    if (blockUtils.thread.peekStack() === BlockRow.mostRecentBlock ? BlockRow.mostRecentBlock.blockId : null) {
+      return;
+    }
     const proccode = blockArgs.mutation ? blockArgs.mutation.proccode : null;
-    console.log(block);
-    console.log(args);
     var newBlock = new BlockRow(block, blockArgs, blockUtils, proccode);
     newBlock.renderBlock();
   }
@@ -316,16 +195,6 @@ export default async function ({ addon }) {
       renderOpcode(arg);
     }
   };*/
-  //vm.runtime._primitives.forEach((func, opcode) => {
-  /*for (let opcode in vm.runtime._primitives) {
-    let func = vm.runtime._primitives[opcode];
-    const oldFunc = func;
-    vm.runtime._primitives[opcode] = function (args, utils) {
-      renderOpcode(opcode, args, (args.mutation || {proccode: {value: ""}}).proccode.value);
-      console.log(args,opcode);
-      oldFunc.bind(this, args, opcode);
-    };
-  }*/
   const oldGetOpcodeFunc = vm.runtime.getOpcodeFunction;
   vm.runtime.getOpcodeFunction = function (opcode) {
     const proper = oldGetOpcodeFunc.call(vm.runtime, opcode);
