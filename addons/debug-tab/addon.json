@@ -21,5 +21,56 @@
       "id" : "spam-variable",
       "text" : "If you have variable monitors on, the console is spammed with variable calls."
     }
-  ]
+  ],
+  "credits" : [
+    {
+      "name" : "TheChorister",
+      "link" : "https://github.com/TheChorister"
+    }
+  ],
+  "settings" : [
+    {
+      "name" : "Show an SVG representation of the block",
+      "id" : "blockSvg",
+      "type" : "boolean",
+      "default" : true
+    },
+    {
+      "name" : "Show the opcode of the block",
+      "id" : "opcode",
+      "type" : "boolean",
+      "default" : false
+    },
+    {
+      "name" : "Show a JSON represation of the arguments the block is receiving",
+      "id" : "jsonArgs",
+      "type" : "boolean",
+      "default" : false
+    },
+    {
+      "name" : "Show the category a block belongs to",
+      "id" : "category",
+      "type" : "boolean",
+      "default": false
+    },
+    {
+      "name" : "Show a timestamp of when the block was run",
+      "id" : "timestamp",
+      "type" : "boolean",
+      "default" : true
+    },
+    {
+      "name" : "Show the id of the block",
+      "id" : "blockId",
+      "type" : "boolean",
+      "default" : false
+    },
+    {
+      "name" : "Have the raw block input value",
+      "id" : "raw_input",
+      "type" : "boolean",
+      "default" : false
+    }
+  ],
+  "l10n" : true
 }
