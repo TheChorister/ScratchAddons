@@ -27,8 +27,9 @@ class BlockRow {
       this.settings = settings;
       this.blockJson;
       // A hack to get the block info
-      ScratchBlocks.Blocks[this.opcode].init.call({jsonInit: (json) => this.blockJson = json});
-      this.category = blockJson.category;
+      const self = this;
+      ScratchBlocks.Blocks[this.opcode].init.call({jsonInit: (json) => self.blockJson = json});
+      this.category = this.blockJson.category || "myBlocks";
       this.xml = this.generateBlockXML();
       this.initRender();
       BlockRow.allBlocks.push(this);
@@ -52,38 +53,40 @@ class BlockRow {
         this.renderBlock();
     }
     initRender () {
-      this.row = document.createElement("tr");
+      this.row = document.createElement("div");
+      this.row.classList.add("sa-debug-row");
       document.querySelector("#opcode-debug").appendChild(this.row);
       this.domRowItems = Object.create(null);
       if (this.settings.get("blockSvg")) {
-        this.domRowItems.DOMWorkspace = document.createElement("td");
+        this.domRowItems.DOMWorkspace = document.createElement("span");
       }
       if (this.settings.get("opcode")) {
-        this.domRowItems.opcode = document.createElement("td");
+        this.domRowItems.opcode = document.createElement("span");
         this.domRowItems.opcode.appendChild(document.createTextNode(this.opcode));
         this.domRowItems.opcode.classList.add("sa-table-text");
       }
       if (this.settings.get("blockId")) {
-        this.domRowItems.blockId = document.createElement("td");
+        this.domRowItems.blockId = document.createElement("span");
         this.domRowItems.blockId.appendChild(document.createTextNode(this.blockId));
         this.domRowItems.blockId.classList.add("sa-table-text");
       }
       if (this.settings.get("jsonArgs")) {
-        this.domRowItems.jsonArgs = document.createElement("td");
+        this.domRowItems.jsonArgs = document.createElement("span");
         this.domRowItems.jsonArgs.appendChild(document.createTextNode(JSON.stringify(this.args)));
         this.domRowItems.jsonArgs.classList.add("sa-table-text");
       }
       if (this.settings.get("category")) {
-        this.domRowItems.category = document.createElement("td");
+        this.domRowItems.category = document.createElement("span");
         this.domRowItems.category.appendChild(document.createTextNode(ScratchBlocks.utils.replaceMessageReferences(this.category)));
         this.domRowItems.category.classList.add("sa-table-text");
       }
       if (this.settings.get("timestamp")) {
-        this.domRowItems.timestamp = document.createElement("td");
+        this.domRowItems.timestamp = document.createElement("span");
         this.domRowItems.timestamp.appendChild(document.createTextNode(new Date()));
         this.domRowItems.timestamp.classList.add("sa-table-text");
       }
       for (let itemName in this.domRowItems) {
+          this.domRowItems[itemName].classList.add("sa-debug-col");
           this.row.appendChild(this.domRowItems[itemName]);
           // Blockly only wants to be injected after the dom has loaded
           if (itemName === "DOMWorkspace") this.initBlock();
@@ -91,9 +94,11 @@ class BlockRow {
     }
     renderBlock () {
       if (this.visible) {
+        this.row.display = "block";
         this.workspace.setVisible(true);
         this.workspace.render();
       } else {
+        this.row.display = "none";
         this.workspace.setVisible(false);
       }
       this.metrics("content");
@@ -102,7 +107,6 @@ class BlockRow {
     }
     metrics (use="content") {
       var metrics = this.workspace.getMetrics();
-      if (!this.visible) metrics = {viewHeight: 0, viewWidth: 0, contentHeight: 0, contentWidth: 0};
       this.domRowItems.DOMWorkspace.style.height = metrics[use + "Height"] + 20 + "px";
       this.domRowItems.DOMWorkspace.style.width = metrics[use + "Width"] + "px";
       ScratchBlocks.svgResize(this.workspace);
@@ -139,7 +143,7 @@ class BlockRow {
     }
     matchesSearch (searchQueries) {
       var matches = (
-        (searchQueries.categories || [this.category]).toLowerCase().includes((this.category || "").toLowerCase()) ||
+        (searchQueries.categories || [this.category]).map(cat => cat.toLowerCase()).includes((this.category || "").toLowerCase()) ||
         this.textSearchMatch(searchQueries.text) > 0
       );
       return matches;

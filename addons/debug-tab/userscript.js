@@ -19,7 +19,7 @@ export default async function ({ addon, msg }) {
   heading.appendChild(headingText);
   // Content
   var debugArea = document.createElement("div");
-  var debugOpcodes = document.createElement("table");
+  var debugOpcodes = document.createElement("div");
   debugOpcodes.id = "opcode-debug";
   debugArea.classList.add("sa-debugger", addon.tab.scratchClass("asset-panel_wrapper"));
   // Search box
@@ -119,7 +119,7 @@ export default async function ({ addon, msg }) {
     document.querySelectorAll(".sa-category-select:not(.deselected-category)").forEach((node) => {categories.push(node.textContent)});
     BlockRow.filterBlocks((b) => b.matchesSearch({
       text: searchInput.value,
-      caegories: categories
+      categories: categories
     }));
   }
   searchInput.addEventListener("input", refreshSearch);

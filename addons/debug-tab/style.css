@@ -3,14 +3,14 @@
     overflow-y: auto;
     /*max-height: 87vh;*/
     height: 50px;
-    width: 100%;
+    min-width: 100%;
     padding: 18px;
 }
-.sa-debugger tr {
-    width: 100%;
+.sa-debugger .sa-debug-row {
+    min-width: 100%;
     margin: 18px;
 }
-.sa-debugger td:not(:first-child) {
+.sa-debugger .sa-debug-col:not(:first-child) {
     margin-left: 10px;
 }
 .sa-table-text {
