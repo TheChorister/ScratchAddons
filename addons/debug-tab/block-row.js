@@ -40,48 +40,56 @@ class BlockRow {
           toolbox: false,
           trashcan: false,
           readOnly: true,
-          scrollbars: false,
-          zoom: false
+          scrollbars: true,
+          zoom: false,
+          media: "/static/blocks-media/"
         });
         this.blocklyBlock = ScratchBlocks.Xml.domToBlock(this.xml, this.workspace);
         this.blocklyBlock.initSvg();
-        // Set media path (or the images dont render)
-        this.workspace.options.pathToMedia = "/static/blocks-media/";
         // Remove background colors and borders
         this.workspace.svgBackground_.style.fill = "#FFFFFF";
         this.workspace.svgBackground_.style.strokeWidth = "0";
         this.renderBlock();
     }
     initRender () {
-      this.row = document.createElement("div");
+      this.row = document.createElement("tr");
       this.row.classList.add("sa-debug-row");
       document.querySelector("#opcode-debug").appendChild(this.row);
       this.domRowItems = Object.create(null);
       if (this.settings.get("blockSvg")) {
-        this.domRowItems.DOMWorkspace = document.createElement("span");
+        this.domRowItems.DOMWorkspace = document.createElement("td");
+      }
+      if (this.settings.get("spriteName")) {
+        this.domRowItems.sprite = document.createElement("td");
+        this.domRowItems.sprite.appendChild(document.createTextNode(`${this.utils.thread.target.getName()} ${
+          !this.utils.thread.target.isOriginal ? `Clone ID: ${
+            this.utils.thread.target.runtime.targets.find((t) => t.sprite && t.isOriginal && t.sprite.name === this.utils.thread.target.getName()).sprite.clones.indexOf(this.utils.thread.target)
+          }` : ``
+        }`));
+        this.domRowItems.sprite.classList.add("sa-table-text");
       }
       if (this.settings.get("opcode")) {
-        this.domRowItems.opcode = document.createElement("span");
+        this.domRowItems.opcode = document.createElement("td");
         this.domRowItems.opcode.appendChild(document.createTextNode(this.opcode));
         this.domRowItems.opcode.classList.add("sa-table-text");
       }
       if (this.settings.get("blockId")) {
-        this.domRowItems.blockId = document.createElement("span");
+        this.domRowItems.blockId = document.createElement("td");
         this.domRowItems.blockId.appendChild(document.createTextNode(this.blockId));
         this.domRowItems.blockId.classList.add("sa-table-text");
       }
       if (this.settings.get("jsonArgs")) {
-        this.domRowItems.jsonArgs = document.createElement("span");
+        this.domRowItems.jsonArgs = document.createElement("td");
         this.domRowItems.jsonArgs.appendChild(document.createTextNode(JSON.stringify(this.args)));
         this.domRowItems.jsonArgs.classList.add("sa-table-text");
       }
       if (this.settings.get("category")) {
-        this.domRowItems.category = document.createElement("span");
+        this.domRowItems.category = document.createElement("td");
         this.domRowItems.category.appendChild(document.createTextNode(ScratchBlocks.utils.replaceMessageReferences(this.category)));
         this.domRowItems.category.classList.add("sa-table-text");
       }
       if (this.settings.get("timestamp")) {
-        this.domRowItems.timestamp = document.createElement("span");
+        this.domRowItems.timestamp = document.createElement("td");
         this.domRowItems.timestamp.appendChild(document.createTextNode(new Date()));
         this.domRowItems.timestamp.classList.add("sa-table-text");
       }
@@ -93,6 +101,7 @@ class BlockRow {
       }
     }
     renderBlock () {
+      this.metrics();
       if (this.visible) {
         this.row.display = "block";
         this.workspace.setVisible(true);
@@ -101,17 +110,21 @@ class BlockRow {
         this.row.display = "none";
         this.workspace.setVisible(false);
       }
-      this.metrics("content");
-      this.metrics("view");
       this.rendered = true;
     }
-    metrics (use="content") {
-      var metrics = this.workspace.getMetrics();
-      this.domRowItems.DOMWorkspace.style.height = metrics[use + "Height"] + 20 + "px";
-      this.domRowItems.DOMWorkspace.style.width = metrics[use + "Width"] + "px";
-      ScratchBlocks.svgResize(this.workspace);
+    metrics () {
       // For some reason hats are offset up 20 pixels
-      if (this.blocklyBlock.startHat_) this.workspace.svgBlockCanvas_.style.transform = "translate(0,20px) scale(1)"; 
+      if (this.blocklyBlock.startHat_) {
+        //this.blocklyBlock.xy_.translate(0, -20)
+        this.workspace.svgBlockCanvas_.style.transform = "translate(0,20px) scale(1)";
+      }
+      var metrics = this.workspace.getBlocksBoundingBox();
+      console.log(metrics);
+      this.domRowItems.DOMWorkspace.style.height = metrics.height + (this.blocklyBlock.startHat_ ? 20 : 0) + "px"; //metrics[use + "Height"] + 20 + "px";
+      this.domRowItems.DOMWorkspace.style.width =  this.workspace.svgBlockCanvas_.getBoundingClientRect().width + "px"; //metrics[use + "Width"] + "px";
+      // this.domRowItems.DOMWorkspace.clientWidth = this.workspace.svgBlockCanvas_.getBoundingClientRect().width;
+      // this.domRowItems.DOMWorkspace.clientHeight = this.workspace.svgBlockCanvas.getBoundingClientRect().height;
+      ScratchBlocks.svgResize(this.workspace);
     }
     getBlockText () {
       return this.blocklyBlock.toString();

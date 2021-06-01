@@ -66,6 +66,12 @@
       "default" : false
     },
     {
+      "name" : "Show the sprite name that ran the block",
+      "id" : "spriteName",
+      "type" : "boolean",
+      "default" : false
+    },
+    {
       "name" : "Have the raw block input value",
       "id" : "raw_input",
       "type" : "boolean",

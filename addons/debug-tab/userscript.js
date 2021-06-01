@@ -2,34 +2,37 @@ import BlockRow from "./block-row.js";
 
 export default async function ({ addon, msg }) {
   addon.tab.redux.initialize();
-  var vm = addon.tab.traps.vm;
+  const vm = addon.tab.traps.vm;
   /*var */window.ScratchBlocks = await addon.tab.traps.getBlockly();
   // DOM:
   // Tab
-  var tabs = await addon.tab.waitForElement("[class*=gui_tabs]");
-  var tabList = await addon.tab.waitForElement("[class*=gui_tab-list]");
+  const tabs = await addon.tab.waitForElement("[class*=gui_tabs]");
+  const tabList = await addon.tab.waitForElement("[class*=gui_tab-list]");
   // Heading
-  var heading = document.createElement("li");
+  const heading = document.createElement("li");
   heading.classList.add(addon.tab.scratchClass("react-tabs_react-tabs__tab"), addon.tab.scratchClass("gui_tab"));
   heading.id = "react-tabs-9";
-  var headingIcon = document.createElement("img");
+  const headingIcon = document.createElement("img");
   headingIcon.src = addon.self.dir+"/icon.svg";
-  var headingText = document.createTextNode("Debugger");
+  const headingText = document.createTextNode("Debugger");
   heading.appendChild(headingIcon);
   heading.appendChild(headingText);
   // Content
-  var debugArea = document.createElement("div");
-  var debugOpcodes = document.createElement("div");
+  const debugArea = document.createElement("div");
+  const debugOpcodesWrapper = document.createElement("div");
+  const debugOpcodes = document.createElement("table");
+  debugOpcodesWrapper.classList.add("sa-table-debug-wrapper");
   debugOpcodes.id = "opcode-debug";
   debugArea.classList.add("sa-debugger", addon.tab.scratchClass("asset-panel_wrapper"));
+  debugOpcodesWrapper.appendChild(debugOpcodes);
   // Search box
-  var searchBox = document.createElement("span");
-  var searchInput = document.createElement("input");
+  const searchBox = document.createElement("span");
+  const searchInput = document.createElement("input");
   searchInput.classList.add(addon.tab.scratchClass("input_input-form"), "sa-debug-search");
   // Category
-  var radioBox = document.createElement("span");
+  const radioBox = document.createElement("span");
   // Just in case we're not on the code tab
-  var originalWorkspace = await (async () => {
+  const originalWorkspace = await (async () => {
     // Guess where this is from?
     const editorMode = addon.tab.traps._getEditorMode();
     if (!editorMode || editorMode === "embed") throw new Error("Cannot access Blockly on this page");
@@ -46,7 +49,7 @@ export default async function ({ addon, msg }) {
     return childable.stateNode.workspace;
   })();
   originalWorkspace.getFlyout().parentToolbox_.categoryMenu_.categories_.forEach((category) => {
-    var newRadio = document.createElement("span");
+    const newRadio = document.createElement("span");
     newRadio.innerText = ScratchBlocks.utils.replaceMessageReferences(category.name_);
     newRadio.classList.add(
       addon.tab.scratchClass("button_outlined-button"),
@@ -62,7 +65,7 @@ export default async function ({ addon, msg }) {
     radioBox.appendChild(newRadio);
   });
   radioBox.classList.add("sa-category-radio-wrapper");
-  var clearBtn = document.createElement("span");
+  const clearBtn = document.createElement("span");
   clearBtn.appendChild(document.createTextNode("Clear"));
   clearBtn.classList.add(
     addon.tab.scratchClass("button_outlined-button"),
@@ -81,15 +84,15 @@ export default async function ({ addon, msg }) {
   debugArea.appendChild(searchBox);
   debugArea.appendChild(radioBox);
   debugArea.appendChild(clearBtn);
-  debugArea.appendChild(debugOpcodes);
+  debugArea.appendChild(debugOpcodesWrapper);
   tabs.appendChild(debugArea);
   tabList.appendChild(heading);
   // VM stuff
   function renderOpcode (block, args={}) {
     var blockArgs = args[0];
     var blockUtils = args[1];
-    console.log(blockUtils.thread.peekStack());
-    console.log(BlockRow.mostRecentBlock());
+    /*console.log(blockUtils.thread.peekStack());
+    console.log(BlockRow.mostRecentBlock());*/
     // If the block is the same as before, ignore it
     // For some reason, reporters show uo as the same block, but come before it, so to avoid showing the incorrect opcode etc.
     // we dispose of the first one and replace it with the new one
