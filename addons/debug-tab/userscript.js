@@ -2,7 +2,7 @@ import BlockRow from "./block-row.js";
 import bindTo from "./utils.js"
 
 export default async function ({ addon, msg }) {
-  const Utils = bindTo({ addon: addon, msg: msg }, { BlockRow })
+  const Utils = bindTo({ addon, msg }, { BlockRow })
   addon.tab.redux.initialize();
   const vm = addon.tab.traps.vm;
   /*var */window.ScratchBlocks = await addon.tab.traps.getBlockly();
@@ -22,11 +22,10 @@ export default async function ({ addon, msg }) {
   // Content
   const debugArea = document.createElement("div");
   const debugOpcodesWrapper = document.createElement("div");
-  const debugOpcodes = document.createElement("table");
   debugOpcodesWrapper.classList.add("sa-table-debug-wrapper");
+  const debugOpcodes = Utils.Table.buildTable(debugOpcodesWrapper);
   debugOpcodes.id = "opcode-debug";
   debugArea.classList.add("sa-debugger", addon.tab.scratchClass("asset-panel_wrapper"));
-  debugOpcodesWrapper.appendChild(debugOpcodes);
   // Search box
   const searchBox = document.createElement("span");
   const searchInput = document.createElement("input");
@@ -89,6 +88,20 @@ export default async function ({ addon, msg }) {
   debugArea.appendChild(debugOpcodesWrapper);
   tabs.appendChild(debugArea);
   tabList.appendChild(heading);
+
+  // Refresh table headers/colgroup sizes
+  function refreshTable () {
+    const columns = Utils.Table.buildColumnList();
+    debugOpcodes.querySelectorAll(".sa-debug-table-head").forEach((column) => {
+      if (!columns.find((c) => c.name === column.textContent)) {
+        debugOpcodes.querySelectorAll(".sa-debug-table-body > .sa-debug-table-row").forEach((row) => {
+          row.childNodes[debugOpcodes.querySelectorAll(".sa-debug-table-head").indexOf(column)].remove();
+        });
+      }
+    });
+    Utils.Table.buildColGroup(debugOpcodes, columns);
+    Utils.Table.buildHeader(debugOpcodes.querySelector("sa-debug-table-header"), columns);
+  }
   // VM stuff
   function renderOpcode (block, args={}) {
     var blockArgs = args[0];
@@ -103,6 +116,7 @@ export default async function ({ addon, msg }) {
     }
     var newBlock = new BlockRow(block, blockArgs, blockUtils, addon.settings);
     newBlock.renderBlock();
+    refreshTable();
   }
   // Profiling is cleaner, but does not give use enough info
   /*vm.runtime.enableProfiling();
@@ -172,4 +186,9 @@ export default async function ({ addon, msg }) {
   heading.addEventListener("click", (e) => {
     addon.tab.redux.dispatch({ type: "scratch-gui/navigation/ACTIVATE_TAB", activeTabIndex: 4 });
   });
+  // React to settings changes or disable/enabling
+  addon.settings.addEventListener("change", refreshTable);
+  addon.self.addEventListener("disabled", () => debugArea.style.display = "none");
+  addon.self.addEventListener("reenabled", () => debugArea.style.display = "block");
+  console.log(chrome);
 }

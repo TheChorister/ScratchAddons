@@ -124,7 +124,7 @@ class BlockRow {
         this.workspace.svgBlockCanvas_.style.transform = "translate(0,20px) scale(1)";
       }
       var metrics = this.workspace.getBlocksBoundingBox();
-      console.log(metrics);
+      // console.log(metrics);
       this.domRowItems.DOMWorkspace.style.height = metrics.height + (this.blocklyBlock.startHat_ ? 20 : 0) + "px"; //metrics[use + "Height"] + 20 + "px";
       this.domRowItems.DOMWorkspace.style.width =  this.workspace.svgBlockCanvas_.getBoundingClientRect().width + "px"; //metrics[use + "Width"] + "px";
       // this.domRowItems.DOMWorkspace.clientWidth = this.workspace.svgBlockCanvas_.getBoundingClientRect().width;

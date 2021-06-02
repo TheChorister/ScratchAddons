@@ -11,11 +11,12 @@ export default function bindTo ({ addon, msg }, { BlockRow }) {
         const colGroup = table.querySelector(".sa-debug-table-colgroup") || table.appendChild(document.createElement("colgroup"));
         colGroup.textContent = "";
         colGroup.classList.add("sa-debug-table-colgroup");
-        const blockSvg = columns.find((column) => column.id === "blockSvg");
+        const blockSvg = columns.find((column) => column.id === "column-blockSvg");
+        var blockWidth;
         if (blockSvg) {
             const blockSvgCol = document.createElement("col");
             blockSvgCol.classList.add("sa-debug-table-col", "sa-debug-blockSvg-col");
-            const blockWidth = Math.max(...BlockRow.allBlocks.map((b) => b.workspace.getBlockById(b.blockId).width));
+            blockWidth = Math.max(...BlockRow.allBlocks.map((b) => b.blocklyBlock.width));
             blockSvgCol.style.width = blockWidth + "px";
             colGroup.appendChild(blockSvgCol);
         }
@@ -28,13 +29,16 @@ export default function bindTo ({ addon, msg }, { BlockRow }) {
         return colGroup;
     }
 
-    Utils.Table.buildHeader = function (table, ...columns) {
-        const headRow = table.querySelector(".sa-debug-table-header") || table.appendChild(document.createElement("tr"));
+    Utils.Table.buildHeader = function (head, ...columns) {
+        head.classList.add("sa-debug-table-header");
+        const headRow = head.querySelector(".sa-debug-table-header-row") || head.appendChild(document.createElement("tr"));
+        console.dir(head)
         headRow.textContent = "";
-        headRow.classList.add("sa-debug-table-header");
+        headRow.classList.add("sa-debug-table-header-row");
         columns.forEach((column) => {
             const head = document.createElement("th");
             head.textContent = column.name || msg(column.id);
+            head.id = `sa-debug-table-head-${column.id}`;
             head.classList.add("sa-debug-table-head");
             headRow.appendChild(head);
         });
@@ -61,8 +65,9 @@ export default function bindTo ({ addon, msg }, { BlockRow }) {
         tableEl.classList.add("sa-debug-table");
         tableEl.querySelectorAll("thead, colgroup").forEach((n) => n.textContent = "");
         const columns = Utils.Table.buildColumnList();
-        tableEl.appendChild(Utils.Table.buildColGroup(tableEl, ...columns));
-        tableEl.appendChild(Utils.Table.buildHeader(tableEl.appendChild(document.createElement("thead")), ...columns));
+        Utils.Table.buildColGroup(tableEl, ...columns);
+        Utils.Table.buildHeader(tableEl.appendChild(document.createElement("thead")), ...columns);
+        if (!tableEl.querySelector("sa-debug-table-body")) tableEl.appendChild("tbody").classList.add("sa-debug-table-body");
         return tableEl;
     }
 

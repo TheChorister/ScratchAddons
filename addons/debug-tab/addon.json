@@ -78,5 +78,6 @@
       "default" : false
     }
   ],
-  "l10n" : true
+  "l10n" : true,
+  "dynamicDisable" : true
 }

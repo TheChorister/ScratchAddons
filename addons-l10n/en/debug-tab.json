@@ -8,5 +8,6 @@
     "debug-tab/column-category" : "Category",
     "debug-tab/column-spriteName" : "Sprite",
     "debug-tab/column-blockId" : "Block ID",
+    "debug-tab/column-jsonArgs" : "Arguments",
     "debug-tab/cloneId" : "Clone ID {id, number}"
 }
