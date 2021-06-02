@@ -79,5 +79,6 @@
     }
   ],
   "l10n" : true,
-  "dynamicDisable" : true
+  "dynamicDisable" : true,
+  "dynamicEnable" : true
 }

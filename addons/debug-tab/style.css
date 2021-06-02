@@ -25,10 +25,10 @@
     padding-bottom: 56px;
     width: 5%;
 }
-col.sa-debug-blockSvg-col ~ col.sa-debug-table-col.col-other {
+.sa-debug-blockSvg-col ~ .sa-debug-table-col.col-other {
     width: calc(100% - var(--otherWidth));
 }
-.sa-debugger .injectionDiv {
+.sa-debugger .injectionDiv, .sa-debugger .blocklySvg {
     width: 100%;
     height: 100%;
 }
