@@ -99,8 +99,8 @@ export default async function ({ addon, msg }) {
         });
       }
     });
-    Utils.Table.buildColGroup(debugOpcodes, columns);
-    Utils.Table.buildHeader(debugOpcodes.querySelector("sa-debug-table-header"), columns);
+    Utils.Table.buildColGroup(debugOpcodes, ...columns);
+    Utils.Table.buildHeader(debugOpcodes.querySelector(".sa-debug-table-header"), ...columns);
   }
   // VM stuff
   function renderOpcode (block, args={}) {

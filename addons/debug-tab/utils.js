@@ -8,7 +8,9 @@ export default function bindTo ({ addon, msg }, { BlockRow }) {
     Utils.Table = {};
 
     Utils.Table.buildColGroup = function (table, ...columns) {
-        const colGroup = table.querySelector(".sa-debug-table-colgroup") || table.appendChild(document.createElement("colgroup"));
+        const colGroup = table.querySelector(".sa-debug-table-colgroup") || document.createElement("colgroup");
+        if (table.firstChild) table.insertBefore(table.firstChild, colGroup);
+        else table.appendChild(colGroup)
         colGroup.textContent = "";
         colGroup.classList.add("sa-debug-table-colgroup");
         const blockSvg = columns.find((column) => column.id === "column-blockSvg");
@@ -32,17 +34,15 @@ export default function bindTo ({ addon, msg }, { BlockRow }) {
     Utils.Table.buildHeader = function (head, ...columns) {
         head.classList.add("sa-debug-table-header");
         const headRow = head.querySelector(".sa-debug-table-header-row") || head.appendChild(document.createElement("tr"));
-        console.dir(head)
         headRow.textContent = "";
         headRow.classList.add("sa-debug-table-header-row");
         columns.forEach((column) => {
-            const head = document.createElement("th");
+            const head = headRow.appendChild(document.createElement("th"));
             head.textContent = column.name || msg(column.id);
             head.id = `sa-debug-table-head-${column.id}`;
             head.classList.add("sa-debug-table-head");
-            headRow.appendChild(head);
         });
-        return headRow;
+        return head;
     }
 
     Utils.Table.buildColumnList = function () {
@@ -65,9 +65,11 @@ export default function bindTo ({ addon, msg }, { BlockRow }) {
         tableEl.classList.add("sa-debug-table");
         tableEl.querySelectorAll("thead, colgroup").forEach((n) => n.textContent = "");
         const columns = Utils.Table.buildColumnList();
-        Utils.Table.buildColGroup(tableEl, ...columns);
-        Utils.Table.buildHeader(tableEl.appendChild(document.createElement("thead")), ...columns);
-        if (!tableEl.querySelector("sa-debug-table-body")) tableEl.appendChild("tbody").classList.add("sa-debug-table-body");
+        const colgroup = Utils.Table.buildColGroup(tableEl, ...columns);
+        const header = Utils.Table.buildHeader(document.createElement("thead"), ...columns);
+        if (colgroup.nextSibling) tableEl.insertBefore(colgroup.nextSibling, header);
+        else tableEl.appendChild(header)
+        if (!tableEl.querySelector("sa-debug-table-body")) tableEl.appendChild(document.createElement("tbody")).classList.add("sa-debug-table-body");
         return tableEl;
     }
 
