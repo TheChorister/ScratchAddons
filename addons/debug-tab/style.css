@@ -23,10 +23,10 @@
 .sa-debugger .sa-debug-col.sa-table-text {
     padding: 5px;
     padding-bottom: 56px;
+    width: 5%;
 }
-.sa-debugger .sa-debug-col:not(.sa-table-text) {
-    /* display: inline-block;
-    width: 100%; */
+col.sa-debug-blockSvg-col ~ col.sa-debug-table-col.col-other {
+    width: calc(100% - var(--otherWidth));
 }
 .sa-debugger .injectionDiv {
     width: 100%;

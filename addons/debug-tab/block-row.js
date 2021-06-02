@@ -40,8 +40,13 @@ class BlockRow {
           toolbox: false,
           trashcan: false,
           readOnly: true,
-          scrollbars: true,
-          zoom: false,
+          scrollbars: false,
+          zoom: {
+            controls: false,
+            wheel: true,
+            pinch: false,
+            startScale: 1.0
+          },
           media: "/static/blocks-media/"
         });
         this.blocklyBlock = ScratchBlocks.Xml.domToBlock(this.xml, this.workspace);
@@ -125,6 +130,7 @@ class BlockRow {
       // this.domRowItems.DOMWorkspace.clientWidth = this.workspace.svgBlockCanvas_.getBoundingClientRect().width;
       // this.domRowItems.DOMWorkspace.clientHeight = this.workspace.svgBlockCanvas.getBoundingClientRect().height;
       ScratchBlocks.svgResize(this.workspace);
+      // this.workspace.zoomToFit();
     }
     getBlockText () {
       return this.blocklyBlock.toString();

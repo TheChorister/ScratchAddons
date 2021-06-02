@@ -17,7 +17,7 @@
   "tags" : ["editor"],
   "info" : [
     {
-      "type" : "warning",
+      "type" : "notice",
       "id" : "spam-variable",
       "text" : "If you have variable monitors on, the console is spammed with variable calls."
     }
@@ -31,43 +31,43 @@
   "settings" : [
     {
       "name" : "Show an SVG representation of the block",
-      "id" : "blockSvg",
+      "id" : "column-blockSvg",
       "type" : "boolean",
       "default" : true
     },
     {
       "name" : "Show the opcode of the block",
-      "id" : "opcode",
+      "id" : "column-opcode",
       "type" : "boolean",
       "default" : false
     },
     {
       "name" : "Show a JSON represation of the arguments the block is receiving",
-      "id" : "jsonArgs",
+      "id" : "column-jsonArgs",
       "type" : "boolean",
       "default" : false
     },
     {
       "name" : "Show the category a block belongs to",
-      "id" : "category",
+      "id" : "column-category",
       "type" : "boolean",
       "default": false
     },
     {
       "name" : "Show a timestamp of when the block was run",
-      "id" : "timestamp",
+      "id" : "column-timestamp",
       "type" : "boolean",
       "default" : true
     },
     {
       "name" : "Show the id of the block",
-      "id" : "blockId",
+      "id" : "column-blockId",
       "type" : "boolean",
       "default" : false
     },
     {
       "name" : "Show the sprite name that ran the block",
-      "id" : "spriteName",
+      "id" : "column-spriteName",
       "type" : "boolean",
       "default" : false
     },

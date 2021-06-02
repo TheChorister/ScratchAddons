@@ -1,0 +1,12 @@
+{
+    "debug-tab/heading" : "Debugger",
+    "debug-tab/clear" : "Clear",
+    "debug-tab/search-placehold" : "Search",
+    "debug-tab/column-blockSvg" : "Image",
+    "debug-tab/column-timestamp" : "Timestamp",
+    "debug-tab/column-opcode" : "Opcode",
+    "debug-tab/column-category" : "Category",
+    "debug-tab/column-spriteName" : "Sprite",
+    "debug-tab/column-blockId" : "Block ID",
+    "debug-tab/cloneId" : "Clone ID {id, number}"
+}

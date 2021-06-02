@@ -1,6 +1,8 @@
 import BlockRow from "./block-row.js";
+import bindTo from "./utils.js"
 
 export default async function ({ addon, msg }) {
+  const Utils = bindTo({ addon: addon, msg: msg }, { BlockRow })
   addon.tab.redux.initialize();
   const vm = addon.tab.traps.vm;
   /*var */window.ScratchBlocks = await addon.tab.traps.getBlockly();
@@ -14,7 +16,7 @@ export default async function ({ addon, msg }) {
   heading.id = "react-tabs-9";
   const headingIcon = document.createElement("img");
   headingIcon.src = addon.self.dir+"/icon.svg";
-  const headingText = document.createTextNode("Debugger");
+  const headingText = document.createTextNode(msg("heading"));
   heading.appendChild(headingIcon);
   heading.appendChild(headingText);
   // Content
@@ -66,7 +68,7 @@ export default async function ({ addon, msg }) {
   });
   radioBox.classList.add("sa-category-radio-wrapper");
   const clearBtn = document.createElement("span");
-  clearBtn.appendChild(document.createTextNode("Clear"));
+  clearBtn.appendChild(document.createTextNode(msg("clear")));
   clearBtn.classList.add(
     addon.tab.scratchClass("button_outlined-button"),
     addon.tab.scratchClass("menu-bar_menu-bar-button"),
