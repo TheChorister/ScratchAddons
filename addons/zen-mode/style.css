@@ -1,0 +1,28 @@
+[class^=gui_body-wrapper] {
+    width: 100%;
+}
+/*
+[class^=gui_body-wrapper]
+
+[class^=stage-wrapper_stage-wrapper].sa-hidden ~ [class^=gui_target-wrapper]:not(.sa-hidden) {
+  padding-top: 2.75rem;
+}
+*/
+
+.sa-zen-mode-button {
+  margin-bottom: 0.375rem;
+  position: absolute;
+  right: 0.375rem;
+}
+/*
+.sa-zen-mode-hideable {
+  transition: ease-in-out;
+  transition-duration: calc(var(--zenMode-speed) / 1000 * 1s);
+  transition-property: all;
+  opacity: 0;
+}
+
+.sa-zen-mode-hideable.sa-hidden {
+  opacity: 1;
+}
+*/
