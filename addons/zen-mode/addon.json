@@ -40,7 +40,7 @@
       "name": "Hide Sprite Pane",
       "default": true,
       "if": {
-        "settings": {"hideStage": true}
+        "settings": { "hideStage": true }
       }
     },
     {
