@@ -1,0 +1,24 @@
+{
+  "name": "Sprite and script count",
+  "description": "Shows the number of sprites and scripts a project has next to the Remix button.",
+  "tags": ["community", "projectPage", "featured"],
+  "credits": [
+    {
+      "name": "TheColaber",
+      "link": "https://scratch.mit.edu/users/TheColaber"
+    }
+  ],
+  "userscripts": [
+    {
+      "url": "projectstats.js",
+      "matches": ["projects"]
+    }
+  ],
+  "userstyles": [
+    {
+      "url": "userscript.css",
+      "matches": ["projects"]
+    }
+  ],
+  "versionAdded": "1.4.0"
+}

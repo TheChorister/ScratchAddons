@@ -1,0 +1,38 @@
+{
+  "name": "Discuss button",
+  "description": "Adds the discuss button to the navigation bar.",
+  "credits": [
+    {
+      "name": "Maximouse"
+    },
+    {
+      "name": "World_Languages"
+    }
+  ],
+  "userscripts": [
+    {
+      "url": "userscript.js",
+      "matches": ["https://scratch.mit.edu/*"],
+      "runAtComplete": false
+    }
+  ],
+  "settings": [
+    {
+      "name": "Remove \"ideas\" button",
+      "id": "removeIdeasBtn",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "Discuss button name",
+      "id": "buttonName",
+      "type": "string",
+      "default": "Discuss",
+      "min": 1,
+      "max": 30
+    }
+  ],
+  "versionAdded": "1.0.0",
+  "tags": ["community", "forums"],
+  "enabledByDefault": false
+}

@@ -1,0 +1,73 @@
+{
+  "name": "ocular integration",
+  "description": "Shows ocular statuses and forum post reactions. Uses my-ocular.jeffalo.net to obtain data.",
+  "credits": [
+    {
+      "name": "Jeffalo"
+    }
+  ],
+  "userscripts": [
+    {
+      "url": "discuss.js",
+      "matches": ["https://scratch.mit.edu/discuss/topic/*"],
+      "if": {
+        "settings": { "discuss": true }
+      }
+    },
+    {
+      "url": "profile.js",
+      "matches": ["https://scratch.mit.edu/users/*/"],
+      "if": {
+        "settings": { "profile": true }
+      }
+    },
+    {
+      "url": "reactions.js",
+      "matches": ["https://scratch.mit.edu/discuss/topic/*"],
+      "if": {
+        "settings": { "reactions": true }
+      }
+    }
+  ],
+  "userstyles": [
+    {
+      "url": "discuss.css",
+      "matches": ["https://scratch.mit.edu/discuss/topic/*"],
+      "if": {
+        "settings": { "discuss": true }
+      }
+    },
+    {
+      "url": "reactions.css",
+      "matches": ["https://scratch.mit.edu/discuss/topic/*"],
+      "if": {
+        "settings": { "reactions": true }
+      }
+    }
+  ],
+  "dynamicEnable": true,
+  "dynamicDisable": true,
+  "settings": [
+    {
+      "name": "Show statuses on profiles",
+      "id": "profile",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "Show statuses on forums",
+      "id": "discuss",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "Show reaction buttons and \"View on ocular\" link",
+      "id": "reactions",
+      "type": "boolean",
+      "default": true
+    }
+  ],
+  "versionAdded": "1.4.0",
+  "tags": ["forums", "profiles", "community"],
+  "enabledByDefault": false
+}

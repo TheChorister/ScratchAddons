@@ -1,0 +1,131 @@
+{
+  "name": "Zen Mode",
+  "description": "Allows you to hide the stage to maximise code area when Ctrl-K-Z is pressed.",
+  "info": [
+    {
+      "id": "macos-key",
+      "text": "On MacOS use the Cmd key.",
+      "type": "notice"
+    }
+  ],
+  "credits": [
+    {
+      "name": "TheChorister",
+      "link": "https://scratch.mit.edu/users/TheChorister"
+    }
+  ],
+  "tags": ["editor"],
+  "userscripts": [
+    {
+      "url": "userscript.js",
+      "matches": ["projects"]
+    }
+  ],
+  "userstyles": [
+    {
+      "url": "style.css",
+      "matches": ["projects"]
+    }
+  ],
+  "settings": [
+    {
+      "id": "hideStage",
+      "type": "boolean",
+      "name": "Hide Stage",
+      "default": true
+    },
+    {
+      "id": "hideSpritePane",
+      "type": "boolean",
+      "name": "Hide Sprite Pane",
+      "default": true,
+      "if": {
+        "settings": { "hideStage": true }
+      }
+    },
+    {
+      "id": "hideNavigationBar",
+      "type": "boolean",
+      "name": "Hide Navigation Bar",
+      "default": false
+    },
+    {
+      "id": "hideBackpack",
+      "type": "boolean",
+      "name": "Hide Backpack",
+      "default": false
+    },
+    {
+      "id": "fullscreen",
+      "type": "boolean",
+      "name": "Fullscreen",
+      "default": true
+<<<<<<< HEAD
+=======
+    },
+    {
+      "id": "animate",
+      "type": "boolean",
+      "name": "Animate",
+      "default": false
+    },
+    {
+      "id": "animateSpeed",
+      "type": "positive_integer",
+      "name": "Animation Length (Milliseconds)",
+      "default": 500,
+      "if": {
+        "settings": {
+          "animate": true
+        }
+      }
+    }
+  ],
+  "presets": [
+    {
+      "id": "none",
+      "name": "No Animation",
+      "description": "No animation",
+      "values": {
+        "animate": false
+      }
+    },
+    {
+      "id": "short",
+      "name": "Short Animation",
+      "description": "Short animation length",
+      "values": {
+        "animateSpeed": 250,
+        "animate": true
+      }
+    },
+    {
+      "id": "default",
+      "name": "Default Animation",
+      "description": "Default animation length",
+      "values": {
+        "animateSpeed": 500,
+        "animate": true
+      }
+    },
+    {
+      "id": "long",
+      "name": "Long Animation",
+      "description": "Long animation length",
+      "values": {
+        "animateSpeed": 1000,
+        "animate": true
+      }
+    }
+  ],
+  "customCssVariables": [
+    {
+      "name": "speed",
+      "value": {
+        "type": "settingValue",
+        "settingId": "animateSpeed"
+      }
+>>>>>>> 248158c802e7a65b849100e4218223a51910f809
+    }
+  ]
+}
