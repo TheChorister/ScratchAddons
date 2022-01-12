@@ -1,28 +1,10 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 248158c802e7a65b849100e4218223a51910f809
 [class^="gui_body-wrapper"] {
   width: 100%;
 }
-/*
-[class^=gui_body-wrapper]
-
-[class^=stage-wrapper_stage-wrapper].sa-hidden ~ [class^=gui_target-wrapper]:not(.sa-hidden) {
-  padding-top: 2.75rem;
-}
-*/
-
-<<<<<<< HEAD
->>>>>>> 248158c8... Format code
-=======
->>>>>>> 248158c802e7a65b849100e4218223a51910f809
 .sa-zen-mode-button {
   margin-bottom: 0.375rem;
   position: absolute;
   right: 0.375rem;
-<<<<<<< HEAD
   -webkit-filter: saturate(0);
   filter: saturate(0);
 }
@@ -31,18 +13,3 @@
   -webkit-filter: none;
   filter: none;
 }
-=======
-}
-/*
-.sa-zen-mode-hideable {
-  transition: ease-in-out;
-  transition-duration: calc(var(--zenMode-speed) / 1000 * 1s);
-  transition-property: all;
-  opacity: 0;
-}
-
-.sa-zen-mode-hideable.sa-hidden {
-  opacity: 1;
-}
-*/
->>>>>>> 248158c802e7a65b849100e4218223a51910f809
