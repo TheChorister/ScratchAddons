@@ -32,8 +32,8 @@ export default async function ({ addon, console }) {
       hidden
     ) {
       spriteSelector.style.width = `${
-        (addon.settings.get("spriteSelectorWidth"))*5-
-        (addon.settings.get("spriteSelectorWidth")-1)*0.5}rem`;
+        addon.settings.get("spriteSelectorWidth") * 5 - (addon.settings.get("spriteSelectorWidth") - 1) * 0.5
+      }rem`;
       hideElements.hideSpritePane.style.width = `calc(${spriteSelector.style.width} + 4.25rem)`;
     } else if (
       addon.settings.get("hideStage") &&
@@ -48,7 +48,12 @@ export default async function ({ addon, console }) {
       hideElements.hideSpritePane.style.width = "";
       hideElements.hideSpritePane.style.minWidth = "";
     }
-    if (addon.settings.get("hideStage") && !addon.settings.get("hideSpritePane") && addon.settings.get("customSpriteSelector") && hidden) {
+    if (
+      addon.settings.get("hideStage") &&
+      !addon.settings.get("hideSpritePane") &&
+      addon.settings.get("customSpriteSelector") &&
+      hidden
+    ) {
       hideElements.hideSpritePane.classList.add("sa-zen-mode-stage-accomodate");
     } else {
       hideElements.hideSpritePane.classList.remove("sa-zen-mode-stage-accomodate");
@@ -69,14 +74,13 @@ export default async function ({ addon, console }) {
     // because the sprite pane element purposefully covers the entire stage
     // so that there is not an empty element if both are hidden
     if (
-      el === "hideSpritePane" ? addon.settings.get("hideStage") && addon.settings.get(el)
-      : el === "hideSpriteInfoPane" ?
-          addon.settings.get("hideStage") &&
-          !addon.settings.get("hideSpritePane") &&
-          addon.settings.get(el)
+      el === "hideSpritePane"
+        ? addon.settings.get("hideStage") && addon.settings.get(el)
+        : el === "hideSpriteInfoPane"
+        ? addon.settings.get("hideStage") && !addon.settings.get("hideSpritePane") && addon.settings.get(el)
         : addon.settings.get(el)
-      ) {
-      console.log(el, addon.settings.get(el))
+    ) {
+      console.log(el, addon.settings.get(el));
       hideElements[el].classList.add("sa-zen-mode-hidden");
     }
   };
@@ -117,7 +121,7 @@ export default async function ({ addon, console }) {
     await initializeElement("hideNavigationBar", "gui_menu-bar-position");
 
     elementNames.forEach((el) => hideElements[el].classList.add("sa-zen-mode-hideable"));
-  }
+  };
 
   /* Button */
   const updateButton = function (b) {
