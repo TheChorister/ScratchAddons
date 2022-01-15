@@ -18,7 +18,7 @@
   display: none;
 }
 
-[class^=gui_stage-and-target-wrapper].sa-zen-mode-hideable.sa-zen-mode-stage-accomodate:not(.sa-zen-mode-hidden) {
+[class^="gui_stage-and-target-wrapper"].sa-zen-mode-hideable.sa-zen-mode-stage-accomodate:not(.sa-zen-mode-hidden) {
   /*margin-top: 2.75rem;*/
   margin-right: 2rem;
 }
