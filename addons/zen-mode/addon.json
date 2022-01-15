@@ -1,13 +1,6 @@
 {
   "name": "Zen Mode",
-  "description": "Allows you to hide the stage to maximise code area when Ctrl-K-Z is pressed.",
-  "info": [
-    {
-      "id": "macos-key",
-      "text": "On MacOS use the Cmd key.",
-      "type": "notice"
-    }
-  ],
+  "description": "Injects a button after the tab bar that allows you to hide the stage to maximise code area.",
   "credits": [
     {
       "name": "TheChorister",
@@ -41,6 +34,44 @@
       "default": true,
       "if": {
         "settings": { "hideStage": true }
+      }
+    },
+    {
+      "id": "hideSpriteInfoPane",
+      "type": "boolean",
+      "name": "Hide Sprite Information Pane",
+      "default": true,
+      "if": {
+        "settings": { "hideStage": true, "hideSpritePane": false }
+      }
+    },
+    {
+      "id": "customSpriteSelector",
+      "name": "Custom Sprite Picker Width",
+      "type": "boolean",
+      "default": true,
+      "if": {
+        "settings": {
+          "hideStage": true,
+          "hideSpritePane": false,
+          "hideSpriteInfoPane": true
+        }
+      }
+    },
+    {
+      "id": "spriteSelectorWidth",
+      "name": "Sprite Picker Width",
+      "type": "integer",
+      "min": 1,
+      "max": 5,
+      "default": 1,
+      "if": {
+        "settings": {
+          "hideStage": true,
+          "hideSpritePane": false,
+          "hideSpriteInfoPane": true,
+          "customSpriteSelector": true
+        }
       }
     },
     {

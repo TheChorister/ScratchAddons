@@ -1,94 +1,101 @@
 export default async function ({ addon, console }) {
   console.log((t) => eval(t));
   const ScratchBlocks = await addon.tab.traps.getBlockly();
-  let finishedAnimating = true;
-  let hidden = false; /*
-  /* Button /
-  const button = document.createElement('img');
-  button.classList.add(
-    addon.tab.scratchClass('stage-header_stage-button'),
-    addon.tab.scratchClass('button_outlined-button')
-  );
-  const updateButton = function () {
-    button.src = `${addon.self.dir}/${hidden ? 'show' : 'hide'}.svg`
-  }
-  addon.tab.appendToSharedSpace({space: 'afterDevTools', element: button, order: 1});
-  updateButton();*/
+  let button;
+
+  let hidden = false;
+
+  /* Hide Element Functions */
   let hideElements = {};
   let elementNames = [];
+
   const initializeElement = async function (elName, elClass) {
     hideElements[elName] = await addon.tab.waitForElement(`[class^=${elClass}]`, {
       reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
     });
     elementNames.push(elName);
   };
-  await initializeElement("hideBackpack", "backpack_backpack-container");
-  await initializeElement("hideStage", "stage-wrapper_stage-wrapper");
-  await initializeElement("hideSpritePane", "gui_stage-and-target-wrapper");
-  await initializeElement("hideNavigationBar", "gui_menu-bar-position");
-  const resetHide = function () {
-    hidden = false;
-    elementNames.forEach(showElement);
-  };
+
   const calculateCss = async function () {
-    if (addon.settings.get("hideStage") && !addon.settings.get("hideSpritePane") && hidden) {
-      hideElements.hideSpritePane.style.paddingTop = "2.75rem";
-    } else {
-      hideElements.hideSpritePane.style.paddingTop = "";
-    }
     const body = await addon.tab.waitForElement("[class^=gui_body-wrapper]");
     if (addon.settings.get("hideNavigationBar") && hidden) {
       body.style.height = "100%";
     } else {
       body.style.height = "";
     }
-  };
-  const showElement = function (el, index) {
-    hideElements[el].style.display = "";
-    hideElements[el].classList.remove("sa-hidden");
-  };
-  const hideElement = function (el, index) {
-    if (addon.settings.get(el)) {
-      hideElements[el].style.display = "none";
-      hideElements[el].classList.add("sa-hidden");
+    const spriteSelector = await addon.tab.waitForElement("[class^=sprite-selector_scroll-wrapper]");
+    if (
+      addon.settings.get("hideStage") &&
+      !addon.settings.get("hideSpritePane") &&
+      addon.settings.get("hideSpriteInfoPane") &&
+      addon.settings.get("customSpriteSelector") &&
+      hidden
+    ) {
+      spriteSelector.style.width = `${
+        (addon.settings.get("spriteSelectorWidth"))*5-
+        (addon.settings.get("spriteSelectorWidth")-1)*0.5}rem`;
+      hideElements.hideSpritePane.style.width = `calc(${spriteSelector.style.width} + 4.25rem)`;
+    } else if (
+      addon.settings.get("hideStage") &&
+      !addon.settings.get("hideSpritePane") &&
+      addon.settings.get("hideSpriteInfoPane") &&
+      hidden
+    ) {
+      // Simulate Stage Pushing Width Out
+      hideElements.hideSpritePane.style.minWidth = "480px";
+    } else {
+      spriteSelector.style.width = "";
+      hideElements.hideSpritePane.style.width = "";
+      hideElements.hideSpritePane.style.minWidth = "";
+    }
+    if (addon.settings.get("hideStage") && !addon.settings.get("hideSpritePane") && addon.settings.get("customSpriteSelector") && hidden) {
+      hideElements.hideSpritePane.classList.add("sa-zen-mode-stage-accomodate");
+    } else {
+      hideElements.hideSpritePane.classList.remove("sa-zen-mode-stage-accomodate");
     }
   };
-  const setElement = function (el, index) {
+
+  const resetHide = function () {
+    hidden = false;
+    elementNames.forEach(showElement);
+  };
+
+  const showElement = function (el) {
+    hideElements[el].classList.remove("sa-zen-mode-hidden");
+  };
+
+  const hideElement = function (el, index) {
+    // Ignore the sprite pang being hidden if the stage is not hidden
+    // because the sprite pane element purposefully covers the entire stage
+    // so that there is not an empty element if both are hidden
+    if (
+      el === "hideSpritePane" ? addon.settings.get("hideStage") && addon.settings.get(el)
+      : el === "hideSpriteInfoPane" ?
+          addon.settings.get("hideStage") &&
+          !addon.settings.get("hideSpritePane") &&
+          addon.settings.get(el)
+        : addon.settings.get(el)
+      ) {
+      console.log(el, addon.settings.get(el))
+      hideElements[el].classList.add("sa-zen-mode-hidden");
+    }
+  };
+  const setElement = function (el) {
     if (addon.settings.get(el) && hidden) {
       hideElement(el);
     } else {
       showElement(el);
     }
   };
-  /* Button */
-  const button = document.createElement("img");
-  button.classList.add(
-    addon.tab.scratchClass("stage-header_stage-button"),
-    addon.tab.scratchClass("button_outlined-button"),
-    "sa-zen-mode-button"
-  );
-  const updateButton = function () {
-    button.src = `${addon.self.dir}/${hidden ? "show" : "hide"}.svg`;
-  };
-  const addButtonToDOM = function (b) {
-    if (document.querySelector("#s3devToolBar")) {
-      document.querySelector("#s3devToolBar").insertAdjacentElement(b);
-    } else {
-      addon.tab.appendToSharedSpace({ space: "afterSoundTab", element: b, order: 4 });
-    }
-  };
-
-  addButtonToDOM(button);
-  updateButton();
 
   const hideStuff = async function () {
     if (addon.tab.editorMode === "editor") {
       elementNames.forEach(setElement);
       await calculateCss();
-      updateButton();
+      updateButton(button);
       if (addon.settings.get("fullscreen")) {
         if (hidden) {
-          document.querySelector("[class^=gui_body-wrapper]").requestFullscreen();
+          document.querySelector(".gui").requestFullscreen();
         } else {
           document.exitFullscreen();
         }
@@ -102,24 +109,55 @@ export default async function ({ addon, console }) {
     hideStuff();
   };
 
-  button.onclick = toggleHide;
+  const initiateHideElements = async function () {
+    await initializeElement("hideBackpack", "backpack_backpack-container");
+    await initializeElement("hideStage", "stage-wrapper_stage-wrapper");
+    await initializeElement("hideSpritePane", "gui_stage-and-target-wrapper");
+    await initializeElement("hideSpriteInfoPane", "sprite-info_sprite-info");
+    await initializeElement("hideNavigationBar", "gui_menu-bar-position");
 
-  elementNames.forEach((el) => el.classList.add("sa-zen-mode-hideable"));
+    elementNames.forEach((el) => hideElements[el].classList.add("sa-zen-mode-hideable"));
+  }
 
+  /* Button */
+  const updateButton = function (b) {
+    b.src = `${addon.self.dir}/${hidden ? "show" : "hide"}.svg`;
+  };
+  const addButtonToDOM = function (b) {
+    if (document.querySelector("#s3devToolBar")) {
+      document.querySelector("#s3devToolBar").insertAdjacentElement(b);
+    } else {
+      addon.tab.appendToSharedSpace({ space: "afterSoundTab", element: b, order: 4 });
+    }
+  };
+  const makeButton = function () {
+    const b = document.createElement("img");
+
+    b.classList.add(
+      addon.tab.scratchClass("stage-header_stage-button"),
+      addon.tab.scratchClass("button_outlined-button"),
+      "sa-zen-mode-button"
+    );
+
+    b.onclick = toggleHide;
+
+    addButtonToDOM(b);
+    updateButton(b);
+
+    return b;
+  };
+
+  /* Initialize */
+
+  await initiateHideElements();
+  makeButton();
+
+  /* Listeners */
   addon.tab.addEventListener("urlChange", resetHide);
-  addon.settings.addEventListener("change", hideStuff); /*
-  let keysPressed = [];
-  window.addEventListener('keydown', function (e) {
-    if (keysPressed.indexOf(e.key) < 0) {
-      keysPressed.push(e.key);
+  addon.settings.addEventListener("change", hideStuff);
+  document.addEventListener("fullscreenchange", function () {
+    if (hidden && !document.fullscreenElement) {
+      resetHide();
     }
   });
-  window.addEventListener('keyup', function (e) {
-    if (keysPressed.sort() === [76, 91] && (e.ctrlKey || e.metaKey)) {
-      hideStuff()
-    }
-    if (keysPressed.indexOf(e.key) >= 0) {
-      keysPressed.splice(keysPressed.indexOf(e.key), 1);
-    }
-  });*/
 }
