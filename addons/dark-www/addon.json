@@ -437,6 +437,18 @@
       }
     },
     {
+      "name": "box-tabSelected",
+      "value": {
+        "type": "textColor",
+        "black": "#328554",
+        "white": "#13ecaf",
+        "source": {
+          "type": "settingValue",
+          "settingId": "box"
+        }
+      }
+    },
+    {
       "name": "box-buttonDisabled",
       "value": {
         "type": "textColor",
@@ -770,6 +782,17 @@
       "name": "gray-text",
       "value": {
         "type": "textColor",
+        "source": {
+          "type": "settingValue",
+          "settingId": "gray"
+        }
+      }
+    },
+    {
+      "name": "gray-darkText",
+      "value": {
+        "type": "textColor",
+        "black": "#3b3b3b",
         "source": {
           "type": "settingValue",
           "settingId": "gray"
@@ -1963,6 +1986,7 @@
       "name": "Navigation bar background",
       "id": "navbar",
       "type": "color",
+      "allowTransparency": true,
       "default": "#4d97ff"
     },
     {
