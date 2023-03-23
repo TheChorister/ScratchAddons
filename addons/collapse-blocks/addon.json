@@ -1,0 +1,35 @@
+{
+  "name": "Collapse Blocks",
+  "description": "Adds functionality in the block context menu to collapse.",
+  "credits": [
+    {
+      "name": "TheChorister",
+      "link": "https://scratch.mit.edu/users/TheChorister"
+    }
+  ],
+  "dynamicEnable": true,
+  "dynamicDisable": true,
+  "versionAdded": "[todo]",
+  "userscripts": [
+    {
+      "url": "userscript.js",
+      "matches": ["projects"]
+    }
+  ],
+  "settings": [
+    {
+      "id": "nested-blocks",
+      "name": "Only collapse blocks with statements inside.",
+      "default": false,
+      "type": "boolean"
+    },
+    {
+      "id": "hide-underhat",
+      "name": "Hide blocks underneath a collapsed HAT",
+      "default": true,
+      "type": "boolean"
+    }
+  ],
+  "tags": ["editor", "codeEditor"],
+  "enabledByDefault": false
+}
