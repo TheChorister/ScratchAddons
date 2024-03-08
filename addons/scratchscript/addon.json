@@ -1,28 +1,27 @@
 {
-    "name": "Scratch Script",
-    "description": "This provides a text based editor for scratch blocks.",
-    "credits": [
-      {
-        "name": "TheChorister"
-      }
-    ],
-    "userscripts": [
-      {
-        "url": "userscript.js",
-        "matches": ["projects"],
-        "runAtComplete": true
-      }
-    ],
-    "userstyles": [
-      {
-        "url": "userstyle.css",
-        "matches": ["projects"]
-      }
-    ],
-    "versionAdded": "1.0.0",
-    "tags": ["editor", "codeEditor"],
-    "enabledByDefault": false,
-    "dynamicEnable": true,
-    "dynamicDisable": true
-  }
-  
+  "name": "Scratch Script",
+  "description": "This provides a text based editor for scratch blocks.",
+  "credits": [
+    {
+      "name": "TheChorister"
+    }
+  ],
+  "userscripts": [
+    {
+      "url": "userscript.js",
+      "matches": ["projects"],
+      "runAtComplete": true
+    }
+  ],
+  "userstyles": [
+    {
+      "url": "userstyle.css",
+      "matches": ["projects"]
+    }
+  ],
+  "versionAdded": "1.0.0",
+  "tags": ["editor", "codeEditor"],
+  "enabledByDefault": false,
+  "dynamicEnable": true,
+  "dynamicDisable": true
+}

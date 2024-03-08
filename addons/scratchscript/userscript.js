@@ -28,7 +28,10 @@ export default async function ({ addon, console }) {
   addon.tab.displayNoneWhileDisabled(heading, { display: "flex" });
 
   const panel = document.createElement("div");
-  panel.classList.add(addon.tab.scratchClass("react-tabs_react-tabs__tab-panel"), addon.tab.scratchClass("gui_tab-panel"));
+  panel.classList.add(
+    addon.tab.scratchClass("react-tabs_react-tabs__tab-panel"),
+    addon.tab.scratchClass("gui_tab-panel")
+  );
 
   // Content
   const ssArea = document.createElement("div");
@@ -53,7 +56,6 @@ export default async function ({ addon, console }) {
       panel.remove();
     }
   }
-
 
   heading.addEventListener("click", (e) => {
     addon.tab.redux.dispatch({ type: "scratch-gui/navigation/ACTIVATE_TAB", activeTabIndex: 4 });
