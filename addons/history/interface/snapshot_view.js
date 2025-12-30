@@ -1,13 +1,13 @@
 class SpriteView {
-    constructor (snapshot_view) {
-        this.snapshot_view = snapshot_view;
-        this.element = null;
-    }
+  constructor(snapshot_view) {
+    this.snapshot_view = snapshot_view;
+    this.element = null;
+  }
 
-    buildSkeleton (scratchClass) {
-        this.element = document.createElement("div");
-        this.element.classList.add("sa-history-snapshot-sprite-view");
-        this.element.innerHTML = `
+  buildSkeleton(scratchClass) {
+    this.element = document.createElement("div");
+    this.element.classList.add("sa-history-snapshot-sprite-view");
+    this.element.innerHTML = `
         <h4>Sprite1</h4>
         <div class="${scratchClass("sprite-info_sprite-info")} ${scratchClass("box_box")}">
    <div class="${scratchClass("sprite-info_row")} ${scratchClass("sprite-info_row-primary")}">
@@ -74,39 +74,39 @@ class SpriteView {
    </div>
 </div>
         `;
-    }
+  }
 
-    loadsnapshot (snapshot) {
-        var target = snapshot.clones.find(c => c.isOriginal);
-        this.element.querySelector("h4").textContent = snapshot.name;
-        this.element.children[1].children[0].children[0].children[0].children[1].value = snapshot.name;
-        this.element.children[1].children[0].children[1].children[0].children[1].value = target.x;
-        this.element.children[1].children[0].children[2].children[0].children[1].value = target.y;
-        var showHides = this.element.children[1].children[1].children[0].children[0].children;
-        showHides[0].setAttribute("aria-pressed", target.visible);
-        showHides[1].setAttribute("aria-pressed", !target.visible);
-        this.element.children[1].children[1].children[1].children[0].children[1].value = target.size;
-        this.element.children[1].children[1].children[2].children[0].children[1].value = target.direction;
-    }
+  loadsnapshot(snapshot) {
+    var target = snapshot.clones.find((c) => c.isOriginal);
+    this.element.querySelector("h4").textContent = snapshot.name;
+    this.element.children[1].children[0].children[0].children[0].children[1].value = snapshot.name;
+    this.element.children[1].children[0].children[1].children[0].children[1].value = target.x;
+    this.element.children[1].children[0].children[2].children[0].children[1].value = target.y;
+    var showHides = this.element.children[1].children[1].children[0].children[0].children;
+    showHides[0].setAttribute("aria-pressed", target.visible);
+    showHides[1].setAttribute("aria-pressed", !target.visible);
+    this.element.children[1].children[1].children[1].children[0].children[1].value = target.size;
+    this.element.children[1].children[1].children[2].children[0].children[1].value = target.direction;
+  }
 
-    mount () {
-        this.snapshot_view.element.children[1].appendChild(this.element);
-    }
+  mount() {
+    this.snapshot_view.element.children[1].appendChild(this.element);
+  }
 }
 
 class SnapshotView {
-    constructor (parent) {
-        this.parent = parent;
-        this.element = null;
-        this.snapshot = null;
-    }
+  constructor(parent) {
+    this.parent = parent;
+    this.element = null;
+    this.snapshot = null;
+  }
 
-    buildSkeleton () {
-        this.element = document.createElement("div");
-        this.element.classList.add("sa-history-snapshot-view");
-        // I'm only doing this for convenience
-        // This only being done as it's a literal - I'm not taking it from anywhere
-        this.element.innerHTML = `
+  buildSkeleton() {
+    this.element = document.createElement("div");
+    this.element.classList.add("sa-history-snapshot-view");
+    // I'm only doing this for convenience
+    // This only being done as it's a literal - I'm not taking it from anywhere
+    this.element.innerHTML = `
         <h2>Snapshot</h2>
         <details class="sa-history-detail">
         <summary><h4>Sprites</h4></summary>
@@ -114,26 +114,24 @@ class SnapshotView {
         <details class="sa-history-detail">
         <summary><h4>Threads</h4></summary>
         </details>
-        `
-    }
+        `;
+  }
 
-    loadsnapshot (snapshot, scratchClass) {
-        if (snapshot.name) {
-            this.element.children[0].textContent = snapshot.name;
-        }
-        for (let sprite in snapshot.runtime.sprites) {
-            let view = new SpriteView(this);
-            view.buildSkeleton(scratchClass);
-            view.loadsnapshot(sprite);
-            view.mount();
-        }
+  loadsnapshot(snapshot, scratchClass) {
+    if (snapshot.name) {
+      this.element.children[0].textContent = snapshot.name;
     }
+    for (let sprite in snapshot.runtime.sprites) {
+      let view = new SpriteView(this);
+      view.buildSkeleton(scratchClass);
+      view.loadsnapshot(sprite);
+      view.mount();
+    }
+  }
 
-    mount () {
-        this.parent.appendChild(this.element);
-    }
+  mount() {
+    this.parent.appendChild(this.element);
+  }
 }
 
-export {
-    SnapshotView as default
-}
+export { SnapshotView as default };

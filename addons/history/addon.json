@@ -1,23 +1,22 @@
 {
-    "name": "History",
-    "description": "Provides a mechanism through which one can see the history of things like variables, color effects etc. and also blocks and sprites.",
-    "credits": [
-      {
-        "name": "TheChorister",
-        "link": "https://scratch.mit.edu/users/TheChorister/"
-      }
-    ],
-    "userscripts": [
-      {
-        "url": "userscript.js",
-        "matches": ["projects"],
-        "runAtComplete": true
-      }
-    ],
-    "dynamicEnable": true,
-    "dynamicDisable": true,
-    "versionAdded": "1.999.0",
-    "enabledByDefault": false,
-    "tags": ["editor", "codeEditor"]
-  }
-  
+  "name": "History",
+  "description": "Provides a mechanism through which one can see the history of things like variables, color effects etc. and also blocks and sprites.",
+  "credits": [
+    {
+      "name": "TheChorister",
+      "link": "https://scratch.mit.edu/users/TheChorister/"
+    }
+  ],
+  "userscripts": [
+    {
+      "url": "userscript.js",
+      "matches": ["projects"],
+      "runAtComplete": true
+    }
+  ],
+  "dynamicEnable": true,
+  "dynamicDisable": true,
+  "versionAdded": "1.999.0",
+  "enabledByDefault": false,
+  "tags": ["editor", "codeEditor"]
+}
